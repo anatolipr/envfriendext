@@ -1,5 +1,6 @@
 <script lang="ts">
-
+     
+    import Unsupported from './Unsupported.svelte'
 
     import { getPageVar } from './lib/chro'
         let version = '0.0.11'
@@ -27,7 +28,7 @@
         }
 </script>
 
-{#if !model || model === 'not supported'} Not supported {:else}
+{#if !model || model === 'not supported'} <Unsupported/> {:else}
 <div
     style="position: relative; width: 312px; height: 383px; overflow: scroll"
     class="container">
