@@ -1,13 +1,13 @@
 {
     "manifest_version": 3,
-    "name": "Chrome Extension v3 Starter",
+    "name": "Environment Friend",
     "description": "A minimal example of a chrome extension using manifest v3",
     "version": "0.0.1",
     "icons": {
-        "16": "icon.png"
+        "128": "icon.png"
     },
     "action": {
-        "default_title": "Chrome Addon v3 Starter",
+        "default_title": "Environment Friend",
         "default_popup": "index.html"
     },
     "permissions": ["activeTab", "scripting"],
