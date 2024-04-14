@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Environment Friend",
-    "description": "A minimal example of a chrome extension using manifest v3",
+    "description": "Environment friend helper",
     "version": "0.0.1",
     "icons": {
         "128": "icon.png"

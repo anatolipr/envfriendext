@@ -3,10 +3,11 @@
     import Unsupported from './Unsupported.svelte'
 
     import { getPageVar } from './lib/chro'
+  import type { Model } from './modelTypes';
         let version = '0.0.11'
 
 
-        let model: {} | string | undefined = undefined;
+        let model: Model | string | undefined = undefined;
 
         (async () => {
           const bla = await getPageVar('__getEFModel', '');
@@ -16,7 +17,7 @@
         })();
 
         async function __overrideEF(prj: string, env: string): Promise<void> {
-            const bla = await getPageVar('__overrideEF', `${prj}:::${env}`)
+            const bla: {[k:string]:any} = await getPageVar('__overrideEF', `${prj}:::${env}`)
             model = {...bla}
         }
 
@@ -29,7 +30,7 @@
 </script>
 
 {#if !model || model === 'not supported'} <Unsupported/> {:else}
-<div
+<div data-m="{JSON.stringify(model)}"
     style="position: relative; width: 312px; height: 383px; overflow: scroll"
     class="container">
     <div style="top: 0px; left: 0px; position: sticky" class="header">
