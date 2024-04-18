@@ -1,0 +1,34 @@
+{
+  "projects": [
+    {
+      "name": "tests/core-ui",
+      "environments": [
+        {
+          "id": "pd1",
+          "name": "production",
+          "usageNote": "this is production"
+        },
+        {
+          "id": "st1",
+          "name": "Stage 1",
+          "usageNote": "QA regression envrionment"
+        }
+      ]
+    },
+    {
+      "name": "team 2",
+      "environments": [
+        {
+          "id": "pd1",
+          "name": "production",
+          "usageNote": "this is production"
+        },
+        {
+          "id": "st12",
+          "name": "Stage 12",
+          "usageNote": "QA regression envrionment"
+        }
+      ]
+    }
+  ]
+}

@@ -1,38 +1,96 @@
 <script lang="ts">
-     
+
     import Unsupported from './Unsupported.svelte'
-
     import { getPageVar } from './lib/chro'
-  import type { Model } from './modelTypes';
-        let version = '0.0.11'
+    import type { Model, Project } from './modelTypes';
+    import { readFile } from 'avos/src/util'
+
+    let version = '0.0.11'
+
+    let model: Model;
+
+    let status: string | undefined = undefined;
+
+    async function initializeModel(): Promise<void> {
+
+        const projects: Project[] =
+         JSON.parse(localStorage.getItem('projects') || '"projects":[]').projects;
 
 
-        let model: Model | string | undefined = undefined;
+        const windowEnv = await getPageVar('__getServerEnv');
+        const details = await getPageVar('__efUseCnt');
 
-        (async () => {
-          const bla = await getPageVar('__getEFModel', '');
+        projects.forEach(project => {
+            project.useCount = details[project.name].useCount;
+            const definedEnv: {[k:string]:boolean} = {};
+            const envStr = details[project.name].envStr;
+            project.environments.forEach(env => {
+                env.override = windowEnv !== envStr && envStr === env.id;
+                env.selected = envStr === env.id;
+                env.name = env.name ? env.name + ` (${env.id})` : env.id;
+                definedEnv[env.id] = true;
+            });
 
-          model  = bla ? {...bla} : "not supported";
-
-        })();
-
-        async function __overrideEF(prj: string, env: string): Promise<void> {
-            const bla: {[k:string]:any} = await getPageVar('__overrideEF', `${prj}:::${env}`)
-            model = {...bla}
-        }
-
-        async function customEnv(prj: string): Promise<void> {
-            let env: string | null  = prompt("enter environment (eg. http://localhost:2000");
-            if (env !== null) {
-                await __overrideEF(prj, env);
+            if (!definedEnv[envStr]) {
+                project.environments.push({
+                    id: envStr,
+                    override: true,
+                    selected: true,
+                    unconfigured: true
+                });
             }
-        }
-</script>
 
-{#if !model || model === 'not supported'} <Unsupported/> {:else}
-<div data-m="{JSON.stringify(model)}"
-    style="position: relative; width: 312px; height: 383px; overflow: scroll"
-    class="container">
+        })
+
+        if (!windowEnv) {
+            status = "not supported"
+        } else {
+            model = {
+                _imenvt_: windowEnv, projects
+            };
+            status = 'ok'
+        }
+
+    }
+
+    initializeModel()
+
+    async function __overrideEF(prj: string, env: string): Promise<void> {
+        await getPageVar('__overrideEF', `${prj}:::${env}`)
+        await initializeModel();
+    }
+
+    async function customEnv(prj: string): Promise<void> {
+        let env: string | null  = prompt("enter environment (eg. http://localhost:2000");
+        if (env !== null) {
+            await __overrideEF(prj, env);
+        }
+    }
+
+    async function uploadConfig(): Promise<void> {
+
+        try {
+            const file = await readFile();
+
+            const parsed = JSON.parse(file);
+            //TODO
+            if (typeof parsed.projects !== 'object') {
+                throw 'incorrect JSON';
+            }
+
+            localStorage.setItem('projects', file);
+
+            initializeModel()
+        } catch (e) {
+            alert('Something went wrong. Please check the file format and try again')
+        }
+    }
+</script>
+{#if status !== 'ok'} <Unsupported /> {:else}
+<div
+    style="position: relative; width: 313px; height: 344px; overflow: scroll"
+    class="cont"
+    data-m="{JSON.stringify(model)}">
     <div style="top: 0px; left: 0px; position: sticky" class="header">
         <div style="width: 37px; height: 27px">
             <svg
@@ -61,13 +119,16 @@
             </svg>
         </div>
         <div style="flex-direction: column; display: flex">
-            <div style="font-size: 12px">server</div>
+            <div style="font-size: 12px">environment default</div>
             <div style="font-size: 21px">{model._imenvt_}</div>
         </div>
     </div>
     {#each model.projects as proj}
     <div class="project">
-        <div class="project-title" on:click="{() => customEnv(proj.name)}" role="none">
+        <div
+            class="project-title"
+            on:click="{() => customEnv(proj.name)}"
+            role="none">
             <div style="width: 15px; height: 15px">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                     <path
@@ -92,18 +153,29 @@
             class="env-line"
             on:click="{() => __overrideEF(proj.name, env.id)}"
             role="none">
+            <div>{env.name || env.id}</div>
             {#if env.selected}
-            <div style="width: 25px; height: 17px" class="toggled"></div>
+            <div style="width: 23px; height: 15px" class="toggled"></div>
             {/if} {#if env.override}
             <div
-                style="width: 24px; height: 22px"
+                style="width: 24px; height: 19px"
                 class="overridden-icon"></div>
             {/if}
-            <div style="height: 24px">{env.name || env.id}</div>
         </div>
         {/each}
     </div>
     {/each}
+    <div class="upload-btn" on:click="{uploadConfig}" role="none">
+        <div>upload configuration</div>
+        <div
+            style="width: 31px; height: 25px; padding: 2px; justify-content: center; align-items: center; display: flex">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+                <path
+                    fill="white"
+                    d="M240 136v64a16 16 0 0 1-16 16H32a16 16 0 0 1-16-16v-64a16 16 0 0 1 16-16h48a8 8 0 0 1 0 16H32v64h192v-64h-48a8 8 0 0 1 0-16h48a16 16 0 0 1 16 16M85.66 77.66L120 43.31V128a8 8 0 0 0 16 0V43.31l34.34 34.35a8 8 0 0 0 11.32-11.32l-48-48a8 8 0 0 0-11.32 0l-48 48a8 8 0 0 0 11.32 11.32M200 168a12 12 0 1 0-12 12a12 12 0 0 0 12-12"></path>
+            </svg>
+        </div>
+    </div>
 </div>
 {/if}
 
@@ -125,6 +197,7 @@
       justify-content: center;
       align-items: center;
       display: flex;
+      align-self: stretch;
     }
 
     .project {
@@ -143,17 +216,19 @@
       display: flex;
       align-items: center;
     }
-
+    .project-title:hover {
+      box-shadow: inset 2px 2px 7px 0px #000000ff;
+    }
     .env-line {
-      gap: 4px;
-      ;
+      padding-left: 31px;
       font-size: 16px;
       font-weight: 200;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow-wrap: anywhere;
       cursor: pointer;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 8px;
+      display: flex;
+      overflow-wrap: anywhere;
     }
 
     .toggled {
@@ -164,14 +239,37 @@
       content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Ccircle cx='12' cy='17' r='1'/%3E%3Cpath d='M21 7v6h-6'/%3E%3Cpath d='M3 17a9 9 0 0 1 9-9a9 9 0 0 1 6 2.3l3 2.7'/%3E%3C/g%3E%3C/svg%3E")
     }
 
-    .container {
+    .cont {
       gap: 6px;
       border: 1px solid gray;
-      background-color: #2a2a2a;
+      background-color: #262626;
       display: flex;
-      flex-direction: column;
       color: white;
+      flex-direction: column;
+      padding-bottom: 22px;
     }
 
+    .upload-btn {
+      gap: 4px;
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-size: 15px;
+      font-weight: 300;
+      border-radius: 91px;
+      background-color: #5f23a4;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      align-self: center;
+    }
+    .upload-btn:hover {
+      box-shadow: inset 2px 2px 7px 0px #000000ff;
+    }
+    .upload-btn:active {
+      background-color: #b5b5b5;
+      transition: background-color 0.2s;
+    }
     * {box-sizing: border-box}
 </style>

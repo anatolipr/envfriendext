@@ -16,4 +16,5 @@ export type Environment = {
     name?:    string;
     override: boolean;
     selected: boolean;
+    unconfigured?: boolean;
 }
