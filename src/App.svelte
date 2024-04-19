@@ -14,7 +14,7 @@
     async function initializeModel(): Promise<void> {
 
         const projects: Project[] =
-         JSON.parse(localStorage.getItem('projects') || '"projects":[]').projects;
+         JSON.parse(localStorage.getItem('projects') || '{"projects":[]}').projects;
 
 
         const windowEnv = await getPageVar('__getServerEnv');

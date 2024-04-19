@@ -20,11 +20,13 @@
         "<all_urls>"
     ],
 
+    
     "content_scripts": [
         {
           "world": "MAIN",
           "matches": ["<all_urls>"],
-          "js": ["content.js"]
+          "js": ["content.js"],
+          "all_frames": true
         }
       ]
 

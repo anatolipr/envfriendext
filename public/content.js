@@ -1,5 +1,12 @@
-
-
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.hasOwnProperty('__envfriendMessage') && window.__envfriend 
+        && window.top != window.self) {
+        if (e.data.method === 'overrideCurrentEnvironment') {
+            console.log('IFRAME override', window)
+            __envfriend.overrideCurrentEnvironment(e.data.project, e.data.override)
+        }
+    }
+});
 
 function __getServerEnv() {
     return __envfriend._imenvt_
@@ -7,6 +14,19 @@ function __getServerEnv() {
 
 function __overrideEF(env) {
     let envSpl = env.split(':::');
+
+    if (window.top == window.self) {
+        [...document.getElementsByTagName('iframe')].forEach(
+            frame => frame.contentWindow.postMessage({
+                __envfriendMessage: true,
+                method: 'overrideCurrentEnvironment',
+                project: envSpl[0],
+                override: envSpl[1]
+            }, '*')
+        )
+    }
+    
+
     __envfriend.overrideCurrentEnvironment(envSpl[0], envSpl[1]);
 }
 
