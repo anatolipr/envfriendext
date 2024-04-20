@@ -16,14 +16,15 @@
         const projects: Project[] =
          JSON.parse(localStorage.getItem('projects') || '{"projects":[]}').projects;
 
-
         const windowEnv = await getPageVar('__getServerEnv');
         const details = await getPageVar('__efUseCnt');
-
-        projects.forEach(project => {
-            project.useCount = details[project.name].useCount;
+        
+        for (let i = 0; i < projects.length; i++) {
+            const project = projects[i];
+            const projEnv = await getPageVar('__getCurrentEnvironmentString', project.name)
+            project.useCount = details[project.name]?.useCount || 0;
             const definedEnv: {[k:string]:boolean} = {};
-            const envStr = details[project.name].envStr;
+            const envStr = details[project.name]?.envStr || projEnv;
             project.environments.forEach(env => {
                 env.override = windowEnv !== envStr && envStr === env.id;
                 env.selected = envStr === env.id;
@@ -39,8 +40,8 @@
                     unconfigured: true
                 });
             }
+        }
 
-        })
 
         if (!windowEnv) {
             status = "not supported"

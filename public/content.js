@@ -1,3 +1,9 @@
+if (! window.__envfriend && window._imenvt_) {
+    const sc = document.createElement('script');
+    sc.setAttribute('src', 'https://cdn.jsdelivr.net/npm/envfriend@0.0.15/dist/tool.js')
+    document.head.appendChild(sc)
+}
+
 window.addEventListener('message', (e) => {
     if (e.data && e.data.hasOwnProperty('__envfriendMessage') && window.__envfriend 
         && window.top != window.self) {
@@ -9,7 +15,11 @@ window.addEventListener('message', (e) => {
 });
 
 function __getServerEnv() {
-    return __envfriend._imenvt_
+    return window.__envfriend ? window.__envfriend._imenvt_ : window._imenvt_
+}
+
+function __getCurrentEnvironmentString(project) {
+    return __envfriend.getCurrentEnvironmentString(project)
 }
 
 function __overrideEF(env) {
@@ -25,13 +35,14 @@ function __overrideEF(env) {
             }, '*')
         )
     }
-    
 
-    __envfriend.overrideCurrentEnvironment(envSpl[0], envSpl[1]);
+    if (window.__envfriend) {
+        window.__envfriend.overrideCurrentEnvironment(envSpl[0], envSpl[1]);
+    }
 }
 
 function __efUseCnt() {
-    return Object.entries(__envfriend.configCache)
+    return Object.entries(window.__envfriend?.configCache || {})
     .reduce((a,v) => { 
         const envStr = __envfriend.getCurrentEnvironmentString(v[0]);
 
