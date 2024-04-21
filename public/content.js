@@ -19,7 +19,7 @@ function __getServerEnv() {
 }
 
 function __getCurrentEnvironmentString(project) {
-    return __envfriend.getCurrentEnvironmentString(project)
+    return window.__envfriend?.getCurrentEnvironmentString(project)
 }
 
 function __overrideEF(env) {
