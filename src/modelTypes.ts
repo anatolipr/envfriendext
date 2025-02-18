@@ -9,6 +9,7 @@ export type Project = {
     isOverride:   boolean;
     name:         string;
     useCount:     number;
+    showEnvInExt: boolean;
 }
 
 export type Environment = {

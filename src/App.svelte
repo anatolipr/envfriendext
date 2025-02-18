@@ -25,6 +25,8 @@
             project.useCount = details[project.name]?.useCount || 0;
             const definedEnv: {[k:string]:boolean} = {};
             const envStr = details[project.name]?.envStr || projEnv;
+            project.showEnvInExt = false;
+
             project.environments.forEach(env => {
                 env.override = windowEnv !== envStr && envStr === env.id;
                 env.selected = envStr === env.id;
@@ -37,7 +39,7 @@
                     id: envStr,
                     override: true,
                     selected: true,
-                    unconfigured: true
+                    unconfigured: true,
                 });
             }
         }
@@ -86,6 +88,33 @@
             alert('Something went wrong. Please check the file format and try again')
         }
     }
+
+    function toggleDisplayEnvironmentsInExt(proj) {
+        proj.showEnvInExt = !proj.showEnvInExt;
+
+        model.projects = [...model.projects];
+    }
+
+    function getSelectedEnvUsed(proj) {
+        let selectedEnv;
+        for (let i = 0; i < proj.environments.length; i++) {
+            if (proj.environments[i].selected) {
+                selectedEnv = proj.environments[i].id
+            }
+        }
+        return selectedEnv;
+    }
+
+    function isOverriedApplied(proj){
+        let isOverride = false;
+        for (let i = 0; i < proj.environments.length; i++) {
+            if (proj.environments[i].override) {
+                isOverride = true;
+            }
+        }
+        return isOverride
+    }
+
 </script>
 {#if status !== 'ok'} <Unsupported /> {:else}
 <div
@@ -128,7 +157,7 @@
     <div class="project">
         <div
             class="project-title"
-            on:click="{() => customEnv(proj.name)}"
+            on:click="{() => toggleDisplayEnvironmentsInExt(proj)}"
             role="none">
             <div style="width: 15px; height: 15px">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -144,26 +173,33 @@
                 style="width: 117px; font-size: 16px; flex: 1; overflow-wrap: anywhere">
                 {proj.name}
             </div>
-            <div
-                style="width: 23px; height: 22px; font-size: 12px; border-radius: 99px; background-color: #000000; display: flex; align-items: center; justify-content: center">
-                {proj.useCount}
+            <div class="more-info">
+                <div class="details" on:click|stopPropagation="{() => customEnv(proj.name)}">+</div>
+                <div class="details">
+                    {proj.useCount}
+                </div>
+                <div class="details current-override" class:overrideApplied={isOverriedApplied(proj)}>
+                    {getSelectedEnvUsed(proj)}
+                </div>
             </div>
         </div>
-        {#each proj.environments as env}
-        <div
-            class="env-line"
-            on:click="{() => __overrideEF(proj.name, env.id)}"
-            role="none">
-            <div>{env.name || env.id}</div>
-            {#if env.selected}
-            <div style="width: 23px; height: 15px" class="toggled"></div>
-            {/if} {#if env.override}
+        {#if proj.showEnvInExt}
+            {#each proj.environments as env}
             <div
-                style="width: 24px; height: 19px"
-                class="overridden-icon"></div>
-            {/if}
-        </div>
-        {/each}
+                class="env-line"
+                on:click="{() => __overrideEF(proj.name, env.id)}"
+                role="none">
+                <div>{env.name || env.id}</div>
+                {#if env.selected}
+                <div style="width: 23px; height: 15px" class="toggled"></div>
+                {/if} {#if env.override}
+                <div
+                    style="width: 24px; height: 19px"
+                    class="overridden-icon"></div>
+                {/if}
+            </div>
+            {/each}
+        {/if}
     </div>
     {/each}
     <div class="upload-btn" on:click="{uploadConfig}" role="none">
@@ -202,9 +238,9 @@
     }
 
     .project {
-      padding: 19px;
+      padding: 5px;
       flex-direction: column;
-      gap: 19px;
+      gap: 10px;
       display: flex;
     }
 
@@ -220,6 +256,34 @@
     .project-title:hover {
       box-shadow: inset 2px 2px 7px 0px #000000ff;
     }
+
+    .more-info {
+        display: flex;
+        gap: 3px;
+    }
+
+    .details {
+        width: 23px;
+        height: 22px;
+        font-size: 12px;
+        border-radius: 99px;
+        background-color: #000000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .current-override {
+        width: fit-content;
+        border-radius: 12px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .overrideApplied {
+        background-color: coral;
+    }
+
     .env-line {
       padding-left: 31px;
       font-size: 16px;
