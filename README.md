@@ -4,7 +4,8 @@ Envfriend extenxion
 
 [Unpacked - dist.zip](https://github.com/anatolipr/envfriendext/files/15050158/dist.zip)
 
-Latest: [Unpacked - dist.zip](https://github.com/anatolipr/envfriendext/blob/main/dist.zip)
+Latest: [dist.zip](https://github.com/user-attachments/files/18872485/dist.zip)
+
 
 # How to Load the Unpacked Chrome Extension
 
