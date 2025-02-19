@@ -1,11 +1,12 @@
-Envfriend extenxion
+### Envfriend Chrome Extension
 
-<img width="309" alt="image" src="https://github.com/anatolipr/envfriendext/assets/29383028/fabc5c33-91ab-4c42-b3ac-033ec20cb528">
+<img width="310" alt="image" src="https://github.com/user-attachments/assets/80af9934-92c6-45bd-a5d0-a75b951109bc" />
 
-[Unpacked - dist.zip](https://github.com/anatolipr/envfriendext/files/15050158/dist.zip)
 
-Latest: [dist.zip](https://github.com/user-attachments/files/18872485/dist.zip)
+### Versions:
 
+- Latest (Feb 2025): [Unpacked - dist.zip](https://github.com/user-attachments/files/18872485/dist.zip)
+- Nov 2024: [Unpacked - dist.zip](https://github.com/anatolipr/envfriendext/files/15050158/dist.zip)
 
 # How to Load the Unpacked Chrome Extension
 
@@ -82,3 +83,10 @@ Here's a brief example of what the process looks like:
 That's it! Your unpacked extension should now be loaded and visible in Chrome.
 
 
+### Other resources
+
+#### envFriend tool
+
+Github - https://github.com/anatolipr/envfriend
+
+CDN - https://www.jsdelivr.com/package/npm/envfriend?tab=files
