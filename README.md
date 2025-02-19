@@ -37,6 +37,27 @@ Envfriend extenxion
    - Find your newly installed extension in the dropdown list.
    - Click the pin icon next to the extension name to pin it to the toolbar for easy access.
 
+8. **Upload your projects/environments configuration:**
+      - When you open the extension in your browser, click on **Upload Configuration** and upload a txt file which contains a json object with a list of your projects and their environments.
+      - The txt file that you upload should look like this:
+        ```
+        {
+        "projects":[
+          {
+            "name": "your-project-name",
+            "environments": [
+                { "id": "production" },
+                { "id": "stage11" },
+                { "id": "stage6" },
+            ]
+          }, 
+          {
+            "name": "example-name",
+            "environments": [ { "id": "production" }, { "id": "stage27" }, { "id": "stage6" } ]
+          }, 
+        ] 
+        }
+
 ## Troubleshooting Tips
 
 - **Check for Errors:**
