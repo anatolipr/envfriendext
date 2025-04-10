@@ -1,32 +1,92 @@
 {
   "projects": [
     {
-      "name": "tests/core-ui",
+      "name": "onboarding-ui/cross-sell",
       "environments": [
         {
-          "id": "pd1",
-          "name": "production",
-          "usageNote": "this is production"
+          "id": "production"
         },
         {
-          "id": "st1",
-          "name": "Stage 1",
-          "usageNote": "QA regression envrionment"
+          "id": "stage27"
+        },
+        {
+          "id": "stage6"
+        },
+        {
+          "id": "test"
         }
       ]
     },
     {
-      "name": "team 2",
+      "name": "onboarding-ui/checklist-assets",
       "environments": [
         {
-          "id": "pd1",
-          "name": "production",
-          "usageNote": "this is production"
+          "id": "production"
         },
         {
-          "id": "st12",
-          "name": "Stage 12",
-          "usageNote": "QA regression envrionment"
+          "id": "stage27"
+        },
+        {
+          "id": "stage6"
+        },
+        {
+          "id": "test"
+        }
+      ]
+    },
+    
+    {
+      "name": "platform-ui/user-management",
+      "environments": [
+        {
+          "id": "production"
+        },
+        {
+          "id": "stage11"
+        },
+        {
+          "id": "stage6"
+        }
+      ]
+    },
+
+    {
+      "name": "other/xm",
+      "environments": [
+        {
+          "id": "production"
+        },
+        {
+          "id": "stage6"
+        }
+      ]
+    },
+
+    {
+      "name": "onboarding-ui/checklist",
+      "environments": [
+        {
+          "id": "production"
+        },
+        {
+          "id": "stage6"
+        },
+        {
+          "id": "stage27"
+        }
+      ]
+    },
+    {
+      "name": "onboarding-ui/mono",
+      "environments": [
+        {
+          "id": "production"
+        },
+        {
+          "id": "stage6"
+        },
+        {
+          "id": "stage27"
         }
       ]
     }
